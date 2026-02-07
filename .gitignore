@@ -1,0 +1,145 @@
+# ============================================
+# Python 编译文件和缓存
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyc
+.Python
+
+# ============================================
+# Python 包管理和分发
+# ============================================
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ============================================
+# 虚拟环境 (Virtual Environment)
+# ============================================
+venv/
+env/
+ENV/
+.venv/
+.env/
+env.bak/
+venv.bak/
+pythonenv*/
+
+# ============================================
+# IDE 和编辑器配置
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+.settings/
+
+# ============================================
+# Jupyter Notebook
+# ============================================
+.ipynb_checkpoints/
+*.ipynb
+
+# ============================================
+# 环境变量配置
+# ============================================
+.env
+.env.local
+.env.*.local
+.envrc
+
+# ============================================
+# 日志文件
+# ============================================
+*.log
+logs/
+*.log.*
+
+# ============================================
+# 数据文件 (Data Files)
+# ============================================
+# 忽略 Data 文件夹下的所有内容
+Data/
+
+# 如果需要保留目录结构，可以使用以下配置：
+# Data/Para Raw/
+# Data/UGC Raw/
+# Data/Processed/
+# !Data/**/.gitkeep
+
+# ============================================
+# 配置文件 (保留)
+# ============================================
+# 但保留爬虫配置文件
+!Crawler/config/*.json
+
+# ============================================
+# 测试和覆盖率报告
+# ============================================
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ============================================
+# 系统文件
+# ============================================
+# Windows
+Thumbs.db
+Desktop.ini
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+
+# ============================================
+# 临时文件
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~.nib
+*.old
