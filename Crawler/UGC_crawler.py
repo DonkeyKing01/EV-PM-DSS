@@ -28,7 +28,7 @@ class CarReviewCrawler:
     # 评论分类
     COMMENT_CATEGORIES = ['空间', '驾驶感受', '续航', '外观', '内饰', '价格政策', '性价比', '智能化']
     
-    def __init__(self, config_path='config/car_models.json', output_dir='../Data/Raw'):
+    def __init__(self, config_path='config/car_models.json', output_dir='../Data/Raw/UGC Raw'):
         """
         初始化爬虫
         
@@ -423,9 +423,7 @@ def main():
     #         '比亚迪': ['唐_新能源', '元PLUS']  
     #     }
     # )
-        crawler.run(
-        brands=['比亚迪']
-    )
+    crawler.run(brands=['奥迪'])
 
 
 if __name__ == "__main__":

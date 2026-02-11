@@ -15,7 +15,7 @@ init(autoreset=True)
 class PictureCrawler:
     def __init__(self):
         self.config_path = os.path.join(os.path.dirname(__file__), "config", "car_models.json")
-        self.pic_raw_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "Data", "Pic Raw")
+        self.pic_raw_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "Data", "Raw","Pic Raw")
         self.car_models = self.load_config()
         
         # 图片分类映射 (URL中的数字 -> 中文名称)
@@ -251,4 +251,4 @@ if __name__ == '__main__':
     # )
     
     # 默认执行: 抓取比亚迪品牌的所有车型
-    crawler.run(brands=['比亚迪'])
+    crawler.run(brands=['奥迪'])

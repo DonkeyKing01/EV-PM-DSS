@@ -127,7 +127,7 @@ def download_series_config(band, series_id, series_name):
     try:
         resp_dict = json.loads(response.text)
         all_info = get_car_config(resp_dict)
-        output_dir = Path(__file__).parent.parent / "Data" / "Para Raw" / band
+        output_dir = Path(__file__).parent.parent / "Data" / "Raw" / "Para Raw" / band
         excel_name = f"{band}_{series_name}_配置.xlsx"
         save_to_excel(all_info, folder=str(output_dir), filename=excel_name)
     except Exception as e:
