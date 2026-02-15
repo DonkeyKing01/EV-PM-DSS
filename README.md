@@ -22,7 +22,8 @@ EV PM DSS 是一个端到端的电动汽车数据分析解决方案。系统通�
 EV PM DSS/
 ├── Crawler/    # 数据基础设施：全量采集参数、图片与UGC评论
 ├── Process/    # 数据治理工厂：清洗、标准化与结构化处理
-└── Analysis/   # 智能分析引擎：用户画像 (Persona) & 战略分析 (IPA)
+├── Analysis/   # 智能分析引擎：用户画像 (Persona) & 战略分析 (IPA)
+└── Graph/      # 知识图谱：Neo4j 图数据库，支持 RAG 检索增强生成
 ```
 
 ### 1. 数据基础设施 (Data Infrastructure)
@@ -51,6 +52,7 @@ EV PM DSS/
 - **数据科学:** Pandas, NumPy, Scikit-learn (K-Means)
 - **NLP:** Transformers (RoBERTa-Chinese), Torch
 - **可视化:** Matplotlib, Seaborn
+- **数据库:** Neo4j Aura (图数据库)
 - **工程化:** 模块化脚本设计，PEP 8 规范
 
 ---
@@ -78,11 +80,21 @@ python Analysis/Persona/step4_merge_external_attributes.py
 
 # 2. 运行 IPA 分析（计算 I/P 分数）
 python Analysis/IPA/step1_compute_scores.py
+
+# 3. 构建知识图谱（需先配置 .env 文件中的 Neo4j 凭据）
+python Graph/test_graph.py      # 测试模式（1000 条评论）
+python Graph/build_graph.py     # 完整导入（52,000+ 条评论）
 ```
 
 ---
 
 ## 更新日志
+
+### v0.3.0 (2026-02-15)
+
+- **知识图谱模块发布**：构建 Neo4j 知识图谱，整合 52,000+ 评论、车型配置、用户画像和 IPA 分析，支持 RAG 检索增强生成应用。
+- **属性增强**：Review 节点包含完整文本内容（9 个字段）和评分数据（7 个字段）。
+- **关系优化**：MENTIONS 关系增加评分、文本标识和长度元数据。
 
 ### v0.2.0 (2026-02-14)
 

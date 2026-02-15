@@ -76,7 +76,7 @@ def main():
     print(Fore.YELLOW + "\n保存测试结果...")
     
     # 指标汇总
-    metrics_file = analyzer.output_dir / "clustering_metrics_test.csv"
+    metrics_file = analyzer.output_dir / "step2a_initial_k_metrics.csv"
     df_metrics = pd.DataFrame(analyzer.metrics_summary)
     df_metrics.to_csv(metrics_file, index=False, encoding='utf-8-sig')
     print(Fore.GREEN + f"✓ 测试指标已保存: {metrics_file.name}")
