@@ -8,6 +8,27 @@ fake-useragent>=1.4.0
 # Data Processing
 pandas>=2.0.0
 openpyxl>=3.1.0
+numpy>=1.24.0
+python-dateutil>=2.8.2
+
+# NLP & ML
+transformers>=4.30.0
+torch>=2.0.0
+scikit-learn>=1.3.0
+tqdm>=4.65.0
+umap-learn>=0.5.0
+sentencepiece>=0.1.99
+
+# Sentiment Analysis (for IPA Analysis)
+# Note: uer/roberta-base-finetuned-jd-binary-chinese model will be auto-downloaded on first run
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
 
 # Utilities
 colorama>=0.4.6
+
+# Development & Testing (Optional)
+# jupyter>=1.0.0
+# ipykernel>=6.20.0

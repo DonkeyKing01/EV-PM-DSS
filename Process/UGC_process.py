@@ -7,6 +7,7 @@ UGC数据处理脚本 - 清洗和标准化用户口碑数据
 
 import pandas as pd
 import re
+import hashlib
 from pathlib import Path
 from datetime import datetime
 from colorama import init, Fore
@@ -29,6 +30,29 @@ class UGCProcessor:
             '夏季': 'summer',
             '冬季': 'winter'
         }
+    
+    def generate_review_id(self, brand, model, review_date, most_satisfied, least_satisfied):
+        """
+        生成评论唯一ID - 基于关键字段的哈希值
+        使用品牌、型号、评论日期和部分评论内容生成稳定的哈希ID
+        """
+        # 组合关键字段
+        id_components = [
+            str(brand or ''),
+            str(model or ''),
+            str(review_date or ''),
+            str(most_satisfied or '')[:50],  # 取前50字符
+            str(least_satisfied or '')[:50]   # 取前50字符
+        ]
+        
+        # 生成唯一字符串
+        id_string = '|'.join(id_components)
+        
+        # 计算MD5哈希值（取前12位作为ID）
+        hash_object = hashlib.md5(id_string.encode('utf-8'))
+        review_id = hash_object.hexdigest()[:12]
+        
+        return review_id
     
     def extract_brand_series_model(self, scraped_model, actual_model, file_brand=None):
         """从车型名称中提取品牌、车系、具体型号"""
@@ -240,25 +264,60 @@ class UGCProcessor:
         return None
     
     def clean_text(self, text, min_length=None):
-        """清洗文本内容"""
+        """清洗文本内容 - 增强版emoji和特殊字符清理"""
         if pd.isna(text) or text == '' or text == '暂无':
             return None
         
         text = str(text).strip()
         
-        # 去除特殊字符（保留中英文、数字、常用标点）
-        text = re.sub(r'[⭐★☆●○■□▲△▼▽◆◇♦♢✓✔✕✖✗✘]', '', text)
+        # 1. 去除所有emoji表情（使用精确的Unicode范围，避免误删中文）
+        emoji_pattern = re.compile(
+            "["
+            "\U0001F600-\U0001F64F"  # 表情符号 Emoticons
+            "\U0001F300-\U0001F5FF"  # 符号和象形文字 Symbols & Pictographs
+            "\U0001F680-\U0001F6FF"  # 交通和地图符号 Transport & Map
+            "\U0001F700-\U0001F77F"  # 炼金术符号 Alchemical Symbols
+            "\U0001F780-\U0001F7FF"  # 几何图形扩展 Geometric Shapes Extended
+            "\U0001F800-\U0001F8FF"  # 补充箭头C Supplemental Arrows-C
+            "\U0001F900-\U0001F9FF"  # 补充符号和象形文字 Supplemental Symbols and Pictographs
+            "\U0001FA00-\U0001FA6F"  # 象形文字扩展A Extended-A
+            "\U0001FA70-\U0001FAFF"  # 符号和象形文字扩展A Symbols and Pictographs Extended-A
+            "\U00002600-\U000026FF"  # 杂项符号 Miscellaneous Symbols
+            "\U00002700-\U000027BF"  # 装饰符号 Dingbats
+            "\U0001F1E0-\U0001F1FF"  # 旗帜 Flags (iOS)
+            "\u200d"                 # 零宽连接符 Zero Width Joiner
+            "\ufe0f"                 # 变体选择符-16 Variation Selector
+            "\u2640-\u2642"          # 性别符号 Gender symbols
+            "\u2600-\u2B55"          # 各种符号
+            "\u23cf"                 # 弹出符号
+            "\u23e9-\u23ef"          # 三角形符号
+            "\u23f0-\u23f3"          # 时钟
+            "\u23f8-\u23fa"          # 媒体控制
+            "]+", 
+            flags=re.UNICODE
+        )
+        text = emoji_pattern.sub('', text)
         
-        # 去除换行符和制表符，替换为空格
+        # 2. 去除特殊符号和图形字符（保留中文标点）
+        text = re.sub(r'[⭐★☆●○■□▲△▼▽◆◇♦♢✓✔✕✖✗✘♥♡❤💗💓💕💖💙💚💛💜🖤💝💞💟❣]', '', text)
+        
+        # 3. 去除特殊空格和格式字符（但不包括中文标点区域）
+        text = re.sub(r'[\u2000-\u200F\u2028-\u202F\u205F-\u206F]', '', text)
+        
+        # 4. 去除控制字符
+        text = re.sub(r'[\x00-\x1F\x7F-\x9F]', '', text)
+        
+        # 5. 统一全角空格为半角空格，去除换行符和制表符
+        text = text.replace('\u3000', ' ')  # 全角空格
         text = text.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
         
-        # 移除多余空白
+        # 6. 移除多余空白
         text = re.sub(r'\s+', ' ', text)
         
-        # 再次清理首尾空白
+        # 7. 再次清理首尾空白
         text = text.strip()
         
-        # 检查长度
+        # 8. 检查长度
         if min_length is None:
             min_length = self.min_text_length
         
@@ -377,6 +436,15 @@ class UGCProcessor:
                 text = row.get(cn_field, None)
                 record[en_field] = self.clean_text(text)
             
+            # 生成唯一评论ID
+            record['review_id'] = self.generate_review_id(
+                brand, 
+                model, 
+                record['review_date'],
+                record.get('most_satisfied'),
+                record.get('least_satisfied')
+            )
+            
             processed_data.append(record)
         
         print(Fore.WHITE + f"  处理后数据: {len(processed_data)} 条 (保留率: {len(processed_data)/len(df)*100:.1f}%)")
@@ -403,6 +471,7 @@ class UGCProcessor:
         
         # 调整列顺序
         column_order = [
+            'review_id',
             'brand', 'series', 'model',
             'mileage', 'purchase_price', 'purchase_date', 'purchase_location', 'review_date',
             'real_range', 'energy_consumption', 'season_type',
@@ -485,13 +554,15 @@ class UGCProcessor:
         if len(df) > 0:
             print(Fore.YELLOW + f"\n示例数据 (第1条):")
             sample = df.iloc[0]
+            print(Fore.WHITE + f"  评论ID: {sample['review_id']}")
             print(Fore.WHITE + f"  品牌: {sample['brand']}")
             print(Fore.WHITE + f"  车系: {sample['series']}")
             print(Fore.WHITE + f"  型号: {sample['model']}")
             print(Fore.WHITE + f"  里程: {sample['mileage']}km")
             print(Fore.WHITE + f"  购买价: {sample['purchase_price']}万")
-            if sample['most_satisfied']:
-                print(Fore.WHITE + f"  最满意: {sample['most_satisfied'][:50]}...")
+            if pd.notna(sample['most_satisfied']) and sample['most_satisfied']:
+                satisfied_text = str(sample['most_satisfied'])
+                print(Fore.WHITE + f"  最满意: {satisfied_text[:100]}...")
 
 
 def main():
