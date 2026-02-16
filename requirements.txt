@@ -1,36 +1,97 @@
-# Web Scraping
-requests>=2.31.0
+# ==================== Core Dependencies ====================# Web Scraping
+
+# Python 3.13+requests>=2.31.0
+
 beautifulsoup4>=4.12.0
-lxml>=5.0.0
-selenium>=4.15.0
-fake-useragent>=1.4.0
 
-# Data Processing
-pandas>=2.0.0
+# ==================== Data Science & ML ====================lxml>=5.0.0
+
+pandas==2.3.0selenium>=4.15.0
+
+numpy>=2.0.0fake-useragent>=1.4.0
+
+scikit-learn==1.6.2
+
+matplotlib==3.10.1# Data Processing
+
+seaborn==0.13.2pandas>=2.0.0
+
 openpyxl>=3.1.0
-numpy>=1.24.0
-python-dateutil>=2.8.2
 
-# NLP & ML
+# ==================== NLP & Embeddings ====================numpy>=1.24.0
+
+transformers==5.2.0python-dateutil>=2.8.2
+
+sentence-transformers==3.5.0
+
+torch==2.7.0# NLP & ML
+
 transformers>=4.30.0
-torch>=2.0.0
-scikit-learn>=1.3.0
+
+# ==================== Vector Database ====================torch>=2.0.0
+
+chromadb==1.5.0scikit-learn>=1.3.0
+
 tqdm>=4.65.0
-umap-learn>=0.5.0
-sentencepiece>=0.1.99
+
+# ==================== Graph Database ====================umap-learn>=0.5.0
+
+neo4j==5.28.0sentencepiece>=0.1.99
+
+python-dotenv==1.0.1
 
 # Sentiment Analysis (for IPA Analysis)
-# Note: uer/roberta-base-finetuned-jd-binary-chinese model will be auto-downloaded on first run
 
-# Visualization
-matplotlib>=3.7.0
-seaborn>=0.12.0
+# ==================== RAG Framework ====================# Note: uer/roberta-base-finetuned-jd-binary-chinese model will be auto-downloaded on first run
+
+chainlit==2.9.6
+
+openai==1.62.0# Visualization
+
+langchain==0.4.3matplotlib>=3.7.0
+
+langchain-community==0.4.3seaborn>=0.12.0
+
+langchain-openai==0.4.2
 
 # Utilities
-colorama>=0.4.6
-neo4j>=5.26.0
-python-dotenv>=1.0.0
+
+# ==================== Web Framework ====================colorama>=0.4.6
+
+fastapi==0.129.0neo4j>=5.26.0
+
+uvicorn==0.37.0python-dotenv>=1.0.0
+
+pydantic==2.11.0
+
+pydantic-settings==2.8.2# Vector Database & RAG
+
+chromadb>=0.4.22
+
+# ==================== HTTP & Network ====================langchain>=0.1.0
+
+requests==2.33.1langchain-community>=0.0.20
+
+httpx==0.29.0langchain-openai>=0.0.5
+
+aiohttp==3.13.3sentence-transformers>=2.3.1
+
+openai>=1.12.0  # For OpenAI-compatible API
+
+# ==================== Data Processing ====================
+
+openpyxl==3.1.5# Frontend
+
+beautifulsoup4==4.14.3chainlit>=1.0.0
+
+lxml==5.4.0
 
 # Development & Testing (Optional)
-# jupyter>=1.0.0
-# ipykernel>=6.20.0
+
+# ==================== Utilities ====================# jupyter>=1.0.0
+
+python-multipart==0.0.23# ipykernel>=6.20.0
+
+filetype==1.2.0
+Pillow==11.2.0
+tqdm==4.67.2

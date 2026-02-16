@@ -85,6 +85,9 @@ logs/
 # 忽略 Data 文件夹下的所有内容
 Data/
 
+# 忽略 Deploy 文件夹（部署相关文件，不提交到版本库）
+Deploy/
+
 # 如果需要保留目录结构，可以使用以下配置：
 # Data/Para Raw/
 # Data/UGC Raw/

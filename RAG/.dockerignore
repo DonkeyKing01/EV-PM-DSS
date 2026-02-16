@@ -1,0 +1,35 @@
+# 不打包到 Docker 镜像的文件
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# 数据文件（从 ModelScope Dataset 下载）
+Data/
+*.csv
+*.db
+*.sqlite
+
+# 环境配置
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# 其他
+*.log
+.DS_Store
