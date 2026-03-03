@@ -144,6 +144,34 @@ cd EV-PM-DSS
 pip install -r requirements.txt
 ```
 
+### 下载数据集
+
+**重要：** 数据文件未包含在代码仓库中，请从 [Releases](https://github.com/DonkeyKing01/EV-PM-DSS/releases) 页面下载。
+
+1. 访问 [Releases 页面](https://github.com/DonkeyKing01/EV-PM-DSS/releases)
+2. 下载 `Data.zip` 文件
+3. 解压到项目根目录
+4. **构建向量数据库**（必须执行）：
+   ```bash
+   python Vector/build_vector_db.py
+   ```
+   构建时间约 10-15 分钟，完成后目录结构为：
+   ```
+   EV-PM-DSS/
+   ├── Data/
+   │   ├── Raw/                  # 原始数据（评论、参数，不含图片）
+   │   ├── Processed/            # 处理后数据 (ugc.csv)
+   │   ├── Analyzed/             # 分析结果
+   │   ├── Vector/               # 向量库（自动生成）
+   │   └── UGC_Vector_chroma/    # 向量库（自动生成）
+   └── ...
+   ```
+
+**说明：**
+- 车型图片（22,000+ 张）未包含在 Release 中，因文件过大且当前项目未使用
+- 如需图片数据，请运行 `python Crawler/Picture_crawler.py` 自行采集
+- 向量数据库需自行构建（可重建且便于自定义参数）
+
 ### 配置环境变量
 
 复制 `.env.example` 为 `.env`，填入你的凭据：
@@ -160,32 +188,35 @@ SILICONFLOW_API_KEY=your-api-key
 
 ### 运行核心流程
 
+**注意：** 如果已下载 Release 中的数据集，步骤 1-2 和步骤 6 是必须的，其他可选。
+
 ```bash
-# 1. 数据采集（可选，已提供处理好的数据）
+# 1. 构建向量数据库（必须，如已下载数据集）
+python Vector/build_vector_db.py
+
+# 2. 构建知识图谱（必须）
+python Graph/build_graph.py
+
+# 3. 数据采集（可选，如已下载数据集请跳过）
 python Crawler/Parameter_crawler.py
 python Crawler/UGC_crawler.py
 
-# 2. 数据处理
+# 4. 数据处理（可选，如已下载数据集请跳过）
 python Process/Para_process.py
 python Process/UGC_process.py
 
-# 3. 用户画像分析
+# 5. 用户画像分析（可选，已有结果在 Data/Analyzed/Persona/）
 cd Analysis/Persona
 python step1_extract_attention.py
 python step3_final_clustering.py
 python step4_merge_external_attributes.py
 
-# 4. IPA 战略分析
+# 6. IPA 战略分析（可选，已有结果在 Data/Analyzed/IPA/）
 cd ../IPA
 python step1_compute_scores.py
 python step2_generate_ipa_reports.py
 
-# 5. 构建知识图谱
-python Graph/build_graph.py
-
-# 6. 构建向量数据库
-python Vector/build_vector_db.py
-
+# 7. 启动 RAG 应用
 # 7. 启动 RAG 应用
 chainlit run RAG/app.py
 ```
