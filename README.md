@@ -1,228 +1,156 @@
-# EV PM DSS - 电动汽车产品管理决策支持系统# EV PM DSS - 电动汽车产品管理决策支持系统
+# EV PM DSS - 电动汽车产品管理决策支持系统
 
-
-
-Electric Vehicle Product Management Decision Support SystemElectric Vehicle Product Management Decision Support System
-
-
-
-------
-
-
-
-## 项目简介## 项目简介
-
-
-
-EV PM DSS 是一个端到端的电动汽车产品决策支持系统，结合了数据采集、知识图谱、向量检索和大模型推理，为产品经理提供从用户洞察到 PRD 撰写的全流程智能辅助。EV PM DSS 是一个端到端的电动汽车数据分析解决方案。系统通过采集主流汽车平台的真实用户评价，利用 NLP 和机器学习技术，构建从数据采集、清洗、用户画像聚类到 IPA（重要性-表现）分析的完整闭环，为产品迭代和市场定位提供量化依据。
-
-
-
-**核心数据规模：****核心数据规模：**
-
-- 数据量级：52,000+ 条深度用户评论- 数据量级：52,000+ 条深度用户评论
-
-- 覆盖范围：12 个主流品牌（比亚迪、特斯拉、蔚来、理想、小鹏、问界、极氪、小米、BBA等）- 覆盖范围：12 个主流品牌（比亚迪、特斯拉、蔚来、理想、小鹏、问界、极氪、小米、BBA等）
-
-- 细分粒度：110+ 车系，22,000+ 车型配置图片- 细分粒度：110+ 车系，22,000+ 车型配置图片
-
-- 用户画像：8 个权威聚类画像
-
-- 知识图谱：Neo4j 图数据库，支持 RAG 检索增强生成---
-
-
-
----## 系统架构与功能
-
-系统采用模块化设计，主要包含三大核心层级：
-
-## 系统架构与功能
-
-```
-
-系统采用模块化设计，主要包含五大核心模块：EV PM DSS/
-
-├── Crawler/    # 数据基础设施：全量采集参数、图片与UGC评论
-
-```├── Process/    # 数据治理工厂：清洗、标准化与结构化处理
-
-EV PM DSS/├── Analysis/   # 智能分析引擎：用户画像 (Persona) & 战略分析 (IPA)
-
-├── Crawler/    # 数据采集：全量采集参数、图片与UGC评论└── Graph/      # 知识图谱：Neo4j 图数据库，支持 RAG 检索增强生成
-
-├── Process/    # 数据处理：清洗、标准化与结构化处理```
-
-├── Analysis/   # 智能分析：用户画像 (Persona) & 战略分析 (IPA)
-
-├── Graph/      # 知识图谱：Neo4j 图数据库构建与查询### 1. 数据基础设施 (Data Infrastructure)
-
-├── Vector/     # 向量数据库：ChromaDB 语义检索
-
-└── RAG/        # RAG 应用：基于 Chainlit 的智能问答系统- **采集 (Crawler):** 针对汽车之家平台，自动化采集车型参数、外观/内饰图片及全量用户口碑。
-
-```- **治理 (Process):** 对非结构化数据进行清洗与标准化，输出统一格式的 ugc.csv 黄金数据集，包含 20+ 个核心分析字段（真实续航、成交价、地缘信息等）。
-
-
-
-### 1. 数据基础设施 (Crawler + Process)### 2. 用户画像分析 (User Persona Modeling) [已完成]
-
-
-
-- **采集 (Crawler):** 针对汽车之家平台，自动化采集车型参数、外观/内饰图片及全量用户口碑。基于 K-Means 聚类算法，从评论行为中提取用户注意力向量，结合地理、价格、用车频率等外部属性，精准识别出 8 类典型用户群体：
-
-- **处理 (Process):** 对非结构化数据进行清洗与标准化，输出统一格式的 ugc.csv 黄金数据集。
-
-- 全能均衡型
-
-### 2. 智能分析引擎 (Analysis)- 传统务实型
-
-- 品质体验型
-
-**用户画像 (Persona Modeling)**  - 内饰舒适型
-
-基于 K-Means 聚类算法，从评论行为中提取用户注意力向量，精准识别出 8 类典型用户群体：- 极致空间型
-
-- 全能均衡型、传统务实型、品质体验型、内饰舒适型- 极致操控型
-
-- 极致空间型、极致操控型、颜值至上型、续航焦虑型- 颜值至上型
-
-- 续航焦虑型
-
-**IPA 战略分析 (Importance-Performance Analysis)**  
-
-构建 "用户关注度-产品表现力" 二维矩阵，针对 7 大核心维度进行战略评估，识别产品的优势区、改进区与机会区。### 3. 战略分析 (IPA - Importance-Performance Analysis) [开发中]
-
-构建 “用户关注度-产品表现力” 二维矩阵，针对 7 大核心维度（外观、内饰、空间、智能、操控、续航、性价比）进行战略评估，识别产品的优势区、改进区与机会区。
-
-### 3. 知识增强层 (Graph + Vector)
-
-💻 技术栈
-
-**知识图谱 (Neo4j)**- **语言:** Python 3.13
-
-- 实体节点：Brand → Series → Model 车型层级，UserPersona 画像节点- **数据科学:** Pandas, NumPy, Scikit-learn (K-Means)
-
-- 关系网络：52,000+ Review 节点通过 MENTIONS 关系连接车型- **NLP:** Transformers (RoBERTa-Chinese), Torch
-
-- 属性丰富：完整评分数据（7维）、文本内容（9字段）、IPA 战略定位- **可视化:** Matplotlib, Seaborn
-
-- **数据库:** Neo4j Aura (图数据库)
-
-**向量数据库 (ChromaDB)**- **工程化:** 模块化脚本设计，PEP 8 规范
-
-- 嵌入模型：paraphrase-multilingual-MiniLM-L12-v2
-
-- 三个集合：ugc_reviews（用户评论）、vehicle_specs（车型规格）、user_personas（画像描述）---
-
-- 智能检索：分层检索策略（快速15条 → 标准50条 → 深度100条）
-
-## 快速开始
-
-### 4. RAG 智能问答系统
-
-### 环境配置
-
-**三大核心功能**
-
-- **用户洞察分析 (User Insights):** 基于真实用户评论和权威画像，分析用户需求、痛点和期望```bash
-
-- **竞品分析 (Competitor Analysis):** 对比多品牌车型的关键参数，整合用户口碑和官方规格git clone https://github.com/DonkeyKing01/EV-PM-DSS.git
-
-- **PRD 文档撰写 (PRD Writer):** 自动生成产品需求文档，所有需求点可溯源到具体数据cd EV-PM-DSS
-
-pip install -r requirements.txt
-
-**技术亮点**```
-
-- 对话记忆：支持多轮对话，自动理解上下文和指代关系
-
-- 混合检索：知识图谱（结构化）+ 向量库（语义检索）### 运行核心流程
-
-- 数据溯源：每个洞察都标注具体来源，防止幻觉
-
-- 智能路由：自动判断问题类型，选择最优检索策略```bash
-
-# 1. 运行用户画像分析全流程（特征提取 -> K值评估 -> 聚类 -> 属性合并）
-
----python Analysis/Persona/step1_extract_attention.py
-
-python Analysis/Persona/step2a_initial_k_test.py
-
-## 技术栈python Analysis/Persona/step2b_k_range_eval.py
-
-python Analysis/Persona/step2c_k_visualization.py
-
-**数据科学**python Analysis/Persona/step3_final_clustering.py
-
-- 语言：Python 3.13python Analysis/Persona/step4_merge_external_attributes.py
-
-- 数据处理：Pandas, NumPy
-
-- 机器学习：Scikit-learn (K-Means)# 2. 运行 IPA 分析（计算 I/P 分数）
-
-- NLP：Transformers (RoBERTa-Chinese), Sentence-Transformerspython Analysis/IPA/step1_compute_scores.py
-
-- 可视化：Matplotlib, Seaborn
-
-# 3. 构建知识图谱（需先配置 .env 文件中的 Neo4j 凭据）
-
-**数据库与存储**python Graph/test_graph.py      # 测试模式（1000 条评论）
-
-- 知识图谱：Neo4j Aurapython Graph/build_graph.py     # 完整导入（52,000+ 条评论）
-
-- 向量数据库：ChromaDB```
-
-- 嵌入模型：paraphrase-multilingual-MiniLM-L12-v2
+Electric Vehicle Product Management Decision Support System
 
 ---
 
-**RAG 应用**
+## 项目简介
 
-- 前端框架：Chainlit## 更新日志
+EV PM DSS 是一个端到端的电动汽车产品决策支持系统，结合了数据采集、知识图谱、向量检索和大模型推理，为产品经理提供从用户洞察到 PRD 撰写的全流程智能辅助。
 
-- 大语言模型：SiliconFlow API (DeepSeek-R1-Distill-Qwen-32B)
+**项目演进：**
 
-- 路由模型：Qwen2.5-7B-Instruct### v0.3.0 (2026-02-15)
+本项目基于 [RAG_System](https://github.com/DonkeyKing01/RAG_System) 开发，在初代系统基础上进行了全面升级：
+- **数据收集**：扩展数据规模至 52,000+ 条有效评论，覆盖 12 个主流品牌
+- **建模方法**：引入用户画像聚类和 IPA 战略分析，增强数据洞察能力
+- **应用属性**：强化产品管理场景，支持用户洞察、竞品分析、PRD 撰写全流程
 
+初代项目详情和相关论文请参见：[RAG_System Repository](https://github.com/DonkeyKing01/RAG_System)
 
+**核心数据规模：**
 
----- **知识图谱模块发布**：构建 Neo4j 知识图谱，整合 52,000+ 评论、车型配置、用户画像和 IPA 分析，支持 RAG 检索增强生成应用。
+- 数据量级：52,000+ 条深度用户评论
+- 覆盖范围：12 个主流品牌（比亚迪、特斯拉、蔚来、理想、小鹏、问界、极氪、小米、BBA等）
+- 细分粒度：110+ 车系，22,000+ 车型配置图片
+- 用户画像：8 个权威聚类画像
+- 知识图谱：Neo4j 图数据库，支持 RAG 检索增强生成
 
-- **属性增强**：Review 节点包含完整文本内容（9 个字段）和评分数据（7 个字段）。
+---
 
-## 快速开始- **关系优化**：MENTIONS 关系增加评分、文本标识和长度元数据。
+## 系统演示
 
+### 系统架构图
+![系统架构图](./docs/images/architecture.png)
 
+### 用户画像聚类结果
+![用户画像可视化](./docs/images/persona-clusters.png)
 
-### 环境配置### v0.2.0 (2026-02-14)
+### IPA 战略分析矩阵
+![IPA 分析图](./docs/images/ipa-matrix.png)
 
+### RAG 问答系统界面
+![RAG 界面截图](./docs/images/rag-interface.png)
 
+---
 
-```bash- 用户画像模块完工：成功实现基于注意力机制的用户聚类，并融合了地缘（347城映射）、价格段、用车频率等多维属性。
+## 系统架构与功能
 
-git clone https://github.com/DonkeyKing01/EV-PM-DSS.git- IPA 模块启动：完成基础评分矩阵计算逻辑。
-
-cd EV-PM-DSS
-
-pip install -r requirements.txt---
+系统采用模块化设计，主要包含五大核心模块：
 
 ```
+EV PM DSS/
+├── Crawler/    # 数据采集：全量采集参数、图片与UGC评论
+├── Process/    # 数据处理：清洗、标准化与结构化处理
+├── Analysis/   # 智能分析：用户画像 (Persona) & 战略分析 (IPA)
+├── Graph/      # 知识图谱：Neo4j 图数据库构建与查询
+├── Vector/     # 向量数据库：ChromaDB 语义检索
+└── RAG/        # RAG 应用：基于 Chainlit 的智能问答系统
+```
 
-## 贡献与联系
+### 1. 数据基础设施 (Crawler + Process)
 
-### 配置环境变量欢迎提交 Issue 或 Pull Request 改进本项目。
+- **采集 (Crawler):** 针对汽车之家平台，自动化采集车型参数、外观/内饰图片及全量用户口碑。
+- **治理 (Process):** 对非结构化数据进行清洗与标准化，输出统一格式的 ugc.csv 黄金数据集，包含 20+ 个核心分析字段（真实续航、成交价、地缘信息等）。
 
+### 2. 用户画像分析 (User Persona Modeling)
 
+基于 K-Means 聚类算法，从评论行为中提取用户注意力向量，结合地理、价格、用车频率等外部属性，精准识别出 8 类典型用户群体：
 
-复制 `.env.example` 为 `.env`，填入你的凭据：- **Author:** [@DonkeyKing01](https://github.com/DonkeyKing01)
+- 全能均衡型
+- 传统务实型
+- 品质体验型
+- 内饰舒适型
+- 极致空间型
+- 极致操控型
+- 颜值至上型
+- 续航焦虑型
 
-- **Repository:** [EV-PM-DSS](https://github.com/DonkeyKing01/EV-PM-DSS)
+### 3. IPA 战略分析 (Importance-Performance Analysis)
 
-```bash- **License:** MIT
+构建 "用户关注度-产品表现力" 二维矩阵，针对 7 大核心维度（外观、内饰、空间、智能、操控、续航、性价比）进行战略评估，识别产品的优势区、改进区与机会区。
 
+### 4. 知识增强层 (Graph + Vector)
+
+**知识图谱 (Neo4j)**
+
+- 实体节点：Brand → Series → Model 车型层级，UserPersona 画像节点
+- 关系网络：52,000+ Review 节点通过 MENTIONS 关系连接车型
+- 属性丰富：完整评分数据（7维）、文本内容（9字段）、IPA 战略定位
+
+**向量数据库 (ChromaDB)**
+
+- 嵌入模型：paraphrase-multilingual-MiniLM-L12-v2
+- 三个集合：ugc_reviews（用户评论）、vehicle_specs（车型规格）、user_personas（画像描述）
+- 智能检索：分层检索策略（快速15条 → 标准50条 → 深度100条）
+
+### 5. RAG 智能问答系统
+
+**三大核心功能**
+
+- **用户洞察分析 (User Insights):** 基于真实用户评论和权威画像，分析用户需求、痛点和期望
+- **竞品分析 (Competitor Analysis):** 对比多品牌车型的关键参数，整合用户口碑和官方规格
+- **PRD 文档撰写 (PRD Writer):** 自动生成产品需求文档，所有需求点可溯源到具体数据
+
+**技术亮点**
+
+- 对话记忆：支持多轮对话，自动理解上下文和指代关系
+- 混合检索：知识图谱（结构化）+ 向量库（语义检索）
+- 数据溯源：每个洞察都标注具体来源，防止幻觉
+- 智能路由：自动判断问题类型，选择最优检索策略
+
+---
+
+## 技术栈
+
+**数据科学**
+
+- 语言：Python 3.13
+- 数据处理：Pandas, NumPy
+- 机器学习：Scikit-learn (K-Means)
+- NLP：Transformers (RoBERTa-Chinese), Sentence-Transformers
+- 可视化：Matplotlib, Seaborn
+
+**数据库与存储**
+
+- 知识图谱：Neo4j Aura
+- 向量数据库：ChromaDB
+- 嵌入模型：paraphrase-multilingual-MiniLM-L12-v2
+
+**RAG 应用**
+
+- 前端框架：Chainlit
+- 大语言模型：SiliconFlow API (DeepSeek-R1-Distill-Qwen-32B)
+- 路由模型：Qwen2.5-7B-Instruct
+
+---
+
+## 快速开始
+
+### 环境配置
+
+```bash
+git clone https://github.com/DonkeyKing01/EV-PM-DSS.git
+cd EV-PM-DSS
+pip install -r requirements.txt
+```
+
+### 配置环境变量
+
+复制 `.env.example` 为 `.env`，填入你的凭据：
+
+```bash
 # Neo4j 数据库
-
-NEO4J_URI=neo4j+s://your-instance.databases.neo4j.io本项目仅供学习研究使用。
+NEO4J_URI=neo4j+s://your-instance.databases.neo4j.io
 NEO4J_USERNAME=neo4j
 NEO4J_PASSWORD=your-password
 
